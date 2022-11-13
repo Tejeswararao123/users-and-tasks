@@ -1,0 +1,14 @@
+GET http://localhost:3001/todos/?status=TO%20DO
+###
+GET  http://localhost:3001/todos/1/
+
+###
+POST  http://localhost:3001/todos/
+Content-Type: application/json
+
+{
+    "id":3,
+    "todo":"Finalize THINGS",
+     "priority":"HIGH",
+     "status":"IN PROGRESS"
+}

@@ -1,0 +1,7 @@
+app.post("/todos/", async(request,response){
+    const {id,todo,priority,status}=request.body;
+    const query=`INSERT INTO todo(id,todo,priority,status)
+    VALUES ('${id}','${todo}','${priority}','${status}');`;
+    await db.run(query);
+    response.send("Todo Successfully Added");
+});
