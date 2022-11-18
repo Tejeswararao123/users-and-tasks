@@ -1,14 +1,25 @@
-GET http://localhost:3001/todos/?status=TO%20DO
-###
-GET  http://localhost:3001/todos/1/
+GET  http://localhost:3001/usertasks?username="sateesh"
 
 ###
-POST  http://localhost:3001/todos/
+POST  http://localhost:3001/adduser/
 Content-Type: application/json
 
 {
-    "id":3,
-    "todo":"Finalize THINGS",
-     "priority":"HIGH",
-     "status":"IN PROGRESS"
+     "username":"sateesh"
 }
+###
+POST  http://localhost:3001/addtask/
+Content-Type: application/json
+
+{
+    "taskname":"Finalize THINGS",
+     "ischeckes":"false",
+     "username":"sateesh"
+}
+
+###
+PUT http://localhost:3000/taskstatuschange/taskid
+###
+
+PUT http://localhost:3000/taskdelete/taskid
+

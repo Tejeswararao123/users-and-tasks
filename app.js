@@ -20,67 +20,53 @@ const initializeDbAndServer = async () => {
   });
 };
 initializeDbAndServer();
-//API 1
-app.get("/todos/", async (request, response) => {
-  try {
-    const { status = "", priority = "", search_q = "" } = request.query;
-    console.log(search_q);
-    const query = `SELECT * FROM todo
-    WHERE status LIKE '%${status}%'
-    AND priority LIKE '%${priority}%'
-    AND todo like '%${search_q}%' ;`;
-    const dbaesponsearray = await db.all(query);
-    response.send(dbaesponsearray);
-  } catch (e) {
-    console.log(e.message);
-  }
+// api 1
+app.post("/adduser/",async(request,response){
+      const {username}=request.body;
+      const query=`insert into usersllist (username)
+      values (${username});`;
+       const responseobj=await db.run(query)
+       response.send("User added successfully")
 });
 //API 2
-app.get("/todos/:todoId", async (request, response) => {
-  const { todoId } = request.params;
-  const query = `SELECT * FROM todo
-    WHERE id='${todoId}';`;
+app.get("/usertasks/", async (request, response) => {
+  const { username } = request.query;
+  const query = `SELECT * FROM usertasks
+    WHERE username='${username}';`;
   const responseobj = await db.get(query);
   response.send(responseobj);
 });
-// API 3
-app.post("/todos/", async (request, response) => {
-  const { id, todo, priority, status } = request.body;
 
-  const query = `INSERT INTO todo(id,todo,priority,status)
-    VALUES (${id},'${todo}','${priority}','${status}');`;
+// API 3
+app.post("/addtask/", async (request, response) => {
+  const { taskname, ischecked, username } = request.body;
+  const query = `INSERT INTO usertask (taskname,ischeckes,username) VALUES (${username},'${ischecked}','${taskname}');`;
   await db.run(query);
-  response.send("Todo Successfully Added");
+  response.send("task Successfully Added");
 });
 
-app.put("/todos/:todoId/", async (request, response) => {
-  const { status, priority, todo } = request.body;
-  const { todoId } = request.params;
-
-  if (status !== undefined) {
-    const query = `UPDATE todo SET status='${status}'
-  where id='${todoId}';`;
-    await db.run(query);
+app.put("/taskstatuschange/:taskid/", async (request, response) => {
+  const { ischeckes, taskid } = request.params;
+  const query = `select * from usertasks where id=${taskid}`;
+  const response = await db.get(query);
+  if (response.ischeckes === false) {
+    const updatequery = `UPDATE usertasks SET ischeckes=${i}where id='${todoId}';`;
+    await db.run(updatequery);
     response.send("Status Updated");
-  } else if (priority !== undefined) {
-    const query = `UPDATE todo SET priority='${priority}'
-  where id='${todoId}';`;
-    await db.run(query);
-    response.send("Priority Updated");
   } else {
-    const query = `UPDATE todo SET todo='${todo}'
-  where id='${todoId}';`;
+    const i = false;
+    const updatequery = `UPDATE todo SET ischeckes='${i}' where id='${taskid}';`;
     await db.run(query);
     response.send("Todo Updated");
   }
 });
 
-app.delete("/todos/:todoId", async (request, response) => {
-  const { todoId } = request.params;
-  const query = `DELETE FROM todo
-     WHERE id=${todoId};`;
+app.delete("/taskdelete/:taskid", async (request, response) => {
+  const { taskid } = request.params;
+  const query = `DELETE FROM usertasks
+     WHERE id=${taskid};`;
   await db.run(query);
-  response.send("Todo Deleted");
+  response.send("Task Deleted");
 });
 
 module.exports = app;
